@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-pub fn get_numbers(line: String) -> Vec<u32> {
+pub fn get_numbers(line: &str) -> Vec<u32> {
     line.chars()
         .filter_map(|char| char.to_digit(10))
         .collect()
 }
 
-pub fn get_text_numbers(line: String) -> Vec<u32> {
+pub fn get_text_numbers(line: &str) -> Vec<u32> {
     let digits: HashMap<&str, u32> = HashMap::from([
         ("one", 1),
         ("two", 2),
@@ -38,34 +38,27 @@ pub fn get_text_numbers(line: String) -> Vec<u32> {
     return numbers;
 }
 
-pub fn calibrate(numbers: Vec<u32>) -> u32 {
-    match (numbers.first(), numbers.last()) {
-        (Some(first), Some(last)) => first * 10 + last,
-        _ => 0
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use crate::day1::{calibrate, get_numbers, get_text_numbers};
 
     #[test]
     pub fn test_get_numbers() {
-        assert_eq!(get_numbers("1abc2".to_string()), vec![1, 2]);
-        assert_eq!(get_numbers("pqr3stu8vwx".to_string()), vec![3, 8]);
-        assert_eq!(get_numbers("a1b2c3d4e5f".to_string()), vec![1, 2, 3, 4, 5]);
-        assert_eq!(get_numbers("treb7uchet".to_string()), vec![7]);
+        assert_eq!(get_numbers("1abc2"), vec![1, 2]);
+        assert_eq!(get_numbers("pqr3stu8vwx"), vec![3, 8]);
+        assert_eq!(get_numbers("a1b2c3d4e5f"), vec![1, 2, 3, 4, 5]);
+        assert_eq!(get_numbers("treb7uchet"), vec![7]);
     }
 
     #[test]
     pub fn test_get_text_numbers() {
-        assert_eq!(get_text_numbers("two1nine".to_string()), vec![2, 1, 9]);
-        assert_eq!(get_text_numbers("eightwothree".to_string()), vec![8, 2, 3]);
-        assert_eq!(get_text_numbers("abcone2threexyz".to_string()), vec![1, 2, 3]);
-        assert_eq!(get_text_numbers("xtwone3four".to_string()), vec![2, 1, 3, 4]);
-        assert_eq!(get_text_numbers("4nineeightseven2".to_string()), vec![4, 9, 8, 7, 2]);
-        assert_eq!(get_text_numbers("zoneight234".to_string()), vec![1, 8, 2, 3, 4]);
-        assert_eq!(get_text_numbers("7pqrstsixteen".to_string()), vec![7, 6]);
+        assert_eq!(get_text_numbers("two1nine"), vec![2, 1, 9]);
+        assert_eq!(get_text_numbers("eightwothree"), vec![8, 2, 3]);
+        assert_eq!(get_text_numbers("abcone2threexyz"), vec![1, 2, 3]);
+        assert_eq!(get_text_numbers("xtwone3four"), vec![2, 1, 3, 4]);
+        assert_eq!(get_text_numbers("4nineeightseven2"), vec![4, 9, 8, 7, 2]);
+        assert_eq!(get_text_numbers("zoneight234"), vec![1, 8, 2, 3, 4]);
+        assert_eq!(get_text_numbers("7pqrstsixteen"), vec![7, 6]);
     }
 
     #[test]
@@ -75,5 +68,12 @@ mod tests {
         assert_eq!(calibrate(vec![1, 2, 3, 4, 5]), 15);
         assert_eq!(calibrate(vec![7]), 77);
         assert_eq!(calibrate(vec![]), 0);
+    }
+}
+
+pub fn calibrate(numbers: Vec<u32>) -> u32 {
+    match (numbers.first(), numbers.last()) {
+        (Some(first), Some(last)) => first * 10 + last,
+        _ => 0
     }
 }

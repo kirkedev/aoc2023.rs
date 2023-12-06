@@ -4,17 +4,19 @@ use aoc::get_input;
 fn main() {
     println!("Day 1");
 
-    let part1 = get_input("day1")
+    let input: Vec<String> = get_input("day1")
         .map_while(Result::ok)
-        .map(get_numbers)
+        .collect();
+
+    let part1 = input.iter()
+        .map(|string| get_numbers(string.as_str()))
         .map(calibrate)
         .sum::<u32>();
 
     println!("Part 1: {}", part1);
 
-    let part2 = get_input("day1")
-        .map_while(Result::ok)
-        .map(get_text_numbers)
+    let part2 = input.iter()
+        .map(|string| get_text_numbers(string.as_str()))
         .map(calibrate)
         .sum::<u32>();
 
