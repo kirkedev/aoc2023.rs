@@ -1,13 +1,13 @@
 use std::collections::HashMap;
 
-pub fn get_numbers(string: String) -> Vec<u32> {
-    string.chars()
+pub fn get_numbers(line: String) -> Vec<u32> {
+    line.chars()
         .filter_map(|char| char.to_digit(10))
         .collect()
 }
 
-pub fn get_text_numbers(string: String) -> Vec<u32> {
-    let numbers: HashMap<&str, u32> = HashMap::from([
+pub fn get_text_numbers(line: String) -> Vec<u32> {
+    let digits: HashMap<&str, u32> = HashMap::from([
         ("one", 1),
         ("two", 2),
         ("three", 3),
@@ -19,27 +19,30 @@ pub fn get_text_numbers(string: String) -> Vec<u32> {
         ("nine", 9)
     ]);
 
-    let mut matches: Vec<u32> = Vec::new();
+    let mut numbers: Vec<u32> = Vec::new();
 
-    for i in 0..string.len() {
-        if let Some(number) = string.chars().nth(i).unwrap().to_digit(10) {
-            matches.push(number);
-        } else {
-            let slice = &string[i..string.len()].to_string();
+    for i in 0..line.len() {
+        let string = &line[i..];
 
-            if let Some(number) = numbers.keys().find(|number| slice.starts_with(*number)) {
-                matches.push(*numbers.get(number).unwrap());
-            }
+        let digit = string.chars().next()
+            .and_then(|char| char.to_digit(10))
+            .or(digits.keys()
+                .find(|digit| string.starts_with(*digit))
+                .and_then(|digit| digits.get(digit).copied()));
+
+        if let Some(number) = digit {
+            numbers.push(number);
         }
     }
 
-    return matches;
+    return numbers;
 }
 
-pub fn calibrate(numbers: Vec<u32>) -> Option<u32> {
-    let first = numbers.first();
-    let last = numbers.last();
-    return Some(first? * 10 + last?);
+pub fn calibrate(numbers: Vec<u32>) -> u32 {
+    match (numbers.first(), numbers.last()) {
+        (Some(first), Some(last)) => first * 10 + last,
+        _ => 0
+    }
 }
 
 #[cfg(test)]
@@ -67,9 +70,10 @@ mod tests {
 
     #[test]
     pub fn test_calibrate() {
-        assert_eq!(calibrate(vec!(1, 2)), Some(12));
-        assert_eq!(calibrate(vec!(3, 8)), Some(38));
-        assert_eq!(calibrate(vec!(1, 2, 3, 4, 5)), Some(15));
-        assert_eq!(calibrate(vec!(7)), Some(77));
+        assert_eq!(calibrate(vec![1, 2]), 12);
+        assert_eq!(calibrate(vec![3, 8]), 38);
+        assert_eq!(calibrate(vec![1, 2, 3, 4, 5]), 15);
+        assert_eq!(calibrate(vec![7]), 77);
+        assert_eq!(calibrate(vec![]), 0);
     }
 }
