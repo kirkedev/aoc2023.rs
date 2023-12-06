@@ -38,6 +38,13 @@ pub fn get_text_numbers(line: &str) -> Vec<u32> {
     return numbers;
 }
 
+pub fn calibrate(numbers: Vec<u32>) -> u32 {
+    match numbers.first().zip(numbers.last()) {
+        Some((first, last)) => first * 10 + last,
+        None => 0
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::day1::{calibrate, get_numbers, get_text_numbers};
@@ -68,12 +75,5 @@ mod tests {
         assert_eq!(calibrate(vec![1, 2, 3, 4, 5]), 15);
         assert_eq!(calibrate(vec![7]), 77);
         assert_eq!(calibrate(vec![]), 0);
-    }
-}
-
-pub fn calibrate(numbers: Vec<u32>) -> u32 {
-    match (numbers.first(), numbers.last()) {
-        (Some(first), Some(last)) => first * 10 + last,
-        _ => 0
     }
 }
