@@ -1,7 +1,8 @@
-use std::fs::{File};
-use std::io::{BufReader, BufRead, Lines};
+use std::fs::File;
+use std::io::{BufRead, BufReader, Lines};
 
 pub mod day1;
+pub mod day2;
 
 pub fn get_input(filename: &str) -> Lines<BufReader<File>> {
     let file = File::open(format!("input/{filename}"))
