@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-pub fn get_numbers(line: &str) -> Vec<u32> {
+fn get_numbers(line: &str) -> Vec<u32> {
     line.chars()
         .filter_map(|char| char.to_digit(10))
         .collect()
 }
 
-pub fn get_text_numbers(line: &str) -> Vec<u32> {
+fn get_text_numbers(line: &str) -> Vec<u32> {
     let digits: HashMap<&str, u32> = HashMap::from([
         ("one", 1),
         ("two", 2),
@@ -38,11 +38,25 @@ pub fn get_text_numbers(line: &str) -> Vec<u32> {
     return numbers;
 }
 
-pub fn calibrate(numbers: Vec<u32>) -> u32 {
+fn calibrate(numbers: Vec<u32>) -> u32 {
     match numbers.first().zip(numbers.last()) {
         Some((first, last)) => first * 10 + last,
         None => 0
     }
+}
+
+pub fn part1(lines: &Vec<String>) -> u32 {
+    lines.iter()
+        .map(|string| get_numbers(string.as_str()))
+        .map(calibrate)
+        .sum::<u32>()
+}
+
+pub fn part2(lines: &Vec<String>) -> u32 {
+    lines.iter()
+        .map(|string| get_text_numbers(string.as_str()))
+        .map(calibrate)
+        .sum::<u32>()
 }
 
 #[cfg(test)]
