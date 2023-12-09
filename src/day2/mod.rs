@@ -43,7 +43,7 @@ pub fn part2(games: &Vec<Game>) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::day2::{cube, get_minimums, validate};
+    use crate::day2::{cube, get_minimums, part1, part2, validate};
     use crate::day2::game::{Cubes, Game};
 
     #[test]
@@ -91,5 +91,31 @@ mod tests {
         assert_eq!(cube(Cubes(20, 13, 6)), 1560);
         assert_eq!(cube(Cubes(14, 3, 15)), 630);
         assert_eq!(cube(Cubes(6, 3, 2)), 36);
+    }
+
+    #[test]
+    pub fn test_part_1() {
+        let games = vec![
+            Game { id: 1, rounds: vec![Cubes(4, 0, 3), Cubes(1, 2, 6), Cubes(0, 2, 0)] },
+            Game { id: 2, rounds: vec![Cubes(0, 2, 1), Cubes(1, 3, 4), Cubes(0, 1, 1)] },
+            Game { id: 3, rounds: vec![Cubes(20, 8, 6), Cubes(4, 13, 0), Cubes(1, 5, 0)] },
+            Game { id: 4, rounds: vec![Cubes(3, 1, 6), Cubes(6, 3, 0), Cubes(14, 3, 15)] },
+            Game { id: 5, rounds: vec![Cubes(6, 3, 1), Cubes(1, 2, 2)] },
+        ];
+
+        assert_eq!(part1(&games), 8);
+    }
+
+    #[test]
+    pub fn test_part_2() {
+        let games = vec![
+            Game { id: 1, rounds: vec![Cubes(4, 0, 3), Cubes(1, 2, 6), Cubes(0, 2, 0)] },
+            Game { id: 2, rounds: vec![Cubes(0, 2, 1), Cubes(1, 3, 4), Cubes(0, 1, 1)] },
+            Game { id: 3, rounds: vec![Cubes(20, 8, 6), Cubes(4, 13, 0), Cubes(1, 5, 0)] },
+            Game { id: 4, rounds: vec![Cubes(3, 1, 6), Cubes(6, 3, 0), Cubes(14, 3, 15)] },
+            Game { id: 5, rounds: vec![Cubes(6, 3, 1), Cubes(1, 2, 2)] },
+        ];
+
+        assert_eq!(part2(&games), 2286);
     }
 }

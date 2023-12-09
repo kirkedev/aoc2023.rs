@@ -61,7 +61,7 @@ pub fn part2(lines: &Vec<String>) -> u32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::day1::{calibrate, get_numbers, get_text_numbers};
+    use crate::day1::{calibrate, get_numbers, get_text_numbers, part1, part2};
 
     #[test]
     pub fn test_get_numbers() {
@@ -89,5 +89,32 @@ mod tests {
         assert_eq!(calibrate(vec![1, 2, 3, 4, 5]), 15);
         assert_eq!(calibrate(vec![7]), 77);
         assert_eq!(calibrate(vec![]), 0);
+    }
+
+    #[test]
+    pub fn test_part_1() {
+        let input: Vec<String> = vec![
+            "1abc2".into(),
+            "pqr3stu8vwx".into(),
+            "a1b2c3d4e5f".into(),
+            "treb7uchet".into(),
+        ];
+
+        assert_eq!(part1(&input), 142)
+    }
+
+    #[test]
+    pub fn test_part_2() {
+        let input: Vec<String> = vec![
+            "two1nine".into(),
+            "eightwothree".into(),
+            "abcone2threexyz".into(),
+            "xtwone3four".into(),
+            "4nineeightseven2".into(),
+            "zoneight234".into(),
+            "7pqrstsixteen".into(),
+        ];
+
+        assert_eq!(part2(&input), 281)
     }
 }
