@@ -47,9 +47,27 @@ pub fn part1(input: &Vec<String>) -> u32 {
         .sum()
 }
 
+pub fn part2(input: &Vec<String>) -> u32 {
+    let (numbers, symbols): (Vec<Object>, Vec<Object>) = parse(input).into_iter()
+        .partition(|object| object.is_number());
+
+    symbols.iter()
+        .map(|symbol|
+            numbers.iter()
+                .filter(|number| number.is_adjacent(symbol))
+                .map_while(|number| number.contents.parse::<u32>().ok())
+                .collect::<Vec<u32>>())
+        .fold(0, |total, gears|
+            if gears.len() == 2 {
+                total + gears.iter().product::<u32>()
+            } else {
+                total
+            })
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::day3::{get_objects, Object, parse, part1};
+    use crate::day3::{get_objects, Object, parse, part1, part2};
 
     #[test]
     pub fn test_get_objects() {
@@ -120,5 +138,23 @@ mod tests {
         ];
 
         assert_eq!(part1(&schematic), 4361);
+    }
+
+    #[test]
+    pub fn test_part_2() {
+        let schematic = vec![
+            "467..114..".into(),
+            "...*......".into(),
+            "..35..633.".into(),
+            "......#...".into(),
+            "617*......".into(),
+            ".....+.58.".into(),
+            "..592.....".into(),
+            "......755.".into(),
+            "...$.*....".into(),
+            ".664.598..".into(),
+        ];
+
+        assert_eq!(part2(&schematic), 467835);
     }
 }

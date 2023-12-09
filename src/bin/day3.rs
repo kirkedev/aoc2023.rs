@@ -1,4 +1,4 @@
-use aoc::day3::part1;
+use aoc::day3::{part1, part2};
 use aoc::get_input;
 
 fn main() {
@@ -8,4 +8,5 @@ fn main() {
 
     println!("Day 3");
     println!("Part 1: {}", part1(&input));
+    println!("Part 2: {}", part2(&input));
 }
