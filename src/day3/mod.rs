@@ -52,11 +52,10 @@ pub fn part2(input: &Vec<String>) -> u32 {
         .partition(|object| object.is_number());
 
     symbols.iter()
-        .map(|symbol|
-            numbers.iter()
-                .filter(|number| number.is_adjacent(symbol))
-                .map_while(|number| number.contents.parse::<u32>().ok())
-                .collect::<Vec<u32>>())
+        .map(|symbol| numbers.iter()
+            .filter(|number| number.is_adjacent(symbol))
+            .map_while(|number| number.contents.parse::<u32>().ok())
+            .collect::<Vec<u32>>())
         .fold(0, |total, gears|
             if gears.len() == 2 {
                 total + gears.iter().product::<u32>()
