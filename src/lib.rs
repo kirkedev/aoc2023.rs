@@ -4,6 +4,7 @@ use std::io::{BufRead, BufReader, Lines};
 pub mod day1;
 pub mod day2;
 pub mod day3;
+pub mod day4;
 
 pub fn get_input(filename: &str) -> Lines<BufReader<File>> {
     let file = File::open(format!("input/{filename}"))
