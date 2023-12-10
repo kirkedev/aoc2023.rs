@@ -10,6 +10,12 @@ pub struct Game {
     pub rounds: Vec<Cubes>,
 }
 
+fn get_count(input: &Vec<(u32, &str)>, color: &str) -> u32 {
+    input.iter()
+        .find(|(_, description)| *description == color)
+        .map_or(0, |(count, _)| *count)
+}
+
 fn parse_round(input: &str) -> Cubes {
     let cubes: Vec<(u32, &str)> = input.split(", ")
         .map_while(|cubes| cubes.split_once(' ')
@@ -17,19 +23,10 @@ fn parse_round(input: &str) -> Cubes {
         .into_iter()
         .collect();
 
-    let red = cubes.iter()
-        .find(|(_, color)| *color == "red")
-        .map_or(0, |(count, _)| *count);
-
-    let green = cubes.iter()
-        .find(|(_, color)| *color == "green")
-        .map_or(0, |(count, _)| *count);
-
-    let blue = cubes.iter()
-        .find(|(_, color)| *color == "blue")
-        .map_or(0, |(count, _)| *count);
-
-    return Cubes(red, green, blue);
+    return Cubes(
+        get_count(&cubes, "red"),
+        get_count(&cubes, "green"),
+        get_count(&cubes, "blue"));
 }
 
 fn parse_rounds(input: &str) -> Vec<Cubes> {

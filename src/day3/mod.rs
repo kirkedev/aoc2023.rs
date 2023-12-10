@@ -1,18 +1,18 @@
 use regex::Regex;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Object {
-    pub contents: String,
-    pub left: usize,
-    pub top: usize,
+struct Object {
+    contents: String,
+    left: usize,
+    top: usize,
 }
 
 impl Object {
-    pub fn is_number(&self) -> bool {
+    fn is_number(&self) -> bool {
         self.contents.chars().all(|char| char.is_digit(10))
     }
 
-    pub fn is_adjacent(&self, other: &Object) -> bool {
+    fn is_adjacent(&self, other: &Object) -> bool {
         return self.top.abs_diff(other.top) <= 1 &&
             (self.left.abs_diff(other.left + other.contents.len() - 1) <= 1 ||
                 other.left.abs_diff(self.left + self.contents.len() - 1) <= 1);
@@ -52,16 +52,14 @@ pub fn part2(input: &Vec<String>) -> u32 {
         .partition(|object| object.is_number());
 
     symbols.iter()
-        .map(|symbol| numbers.iter()
-            .filter(|number| number.is_adjacent(symbol))
-            .map_while(|number| number.contents.parse::<u32>().ok())
-            .collect::<Vec<u32>>())
-        .fold(0, |total, gears|
-            if gears.len() == 2 {
-                total + gears.iter().product::<u32>()
-            } else {
-                total
-            })
+        .map(|symbol|
+            numbers.iter()
+                .filter(|number| number.is_adjacent(symbol))
+                .map_while(|number| number.contents.parse::<u32>().ok())
+                .collect::<Vec<u32>>())
+        .filter(|gears| gears.len() == 2)
+        .map(|gears| gears.iter().product::<u32>())
+        .sum()
 }
 
 #[cfg(test)]
