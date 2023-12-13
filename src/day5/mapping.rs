@@ -6,7 +6,7 @@ use anyhow::Result;
 use itertools::Itertools;
 use regex::Regex;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 #[allow(dead_code)]
 pub enum MappingType {
     Seeds = 0,
@@ -29,45 +29,39 @@ impl FromStr for Mapping {
     type Err = anyhow::Error;
 
     fn from_str(input: &str) -> Result<Self> {
-        Regex::new(r"(?<dest>\d+)\s(?<src>\d+)\s(?<len>\d+)").unwrap()
+        Regex::new(r"(?<dest>\d+)\s(?<src>\d+)\s(?<len>\d+)")?
             .captures(input)
             .context("Failed to find mapping values in {input}")
-            .and_then(|captures|
-                Ok([
-                    captures["src"].parse::<usize>()?,
-                    captures["dest"].parse::<usize>()?,
-                    captures["len"].parse::<usize>()?
-                ]))
-            .map(|[src, dest, len]|
-                Mapping {
-                    source: src..src + len,
-                    destination: dest..dest + len,
-                })
+            .and_then(|captures| Ok([
+                captures["src"].parse::<usize>()?,
+                captures["dest"].parse::<usize>()?,
+                captures["len"].parse::<usize>()?
+            ]))
+            .map(|[src, dest, len]| Mapping {
+                source: src..src + len,
+                destination: dest..dest + len,
+            })
     }
 }
 
-pub fn parse(input: Vec<String>) -> Result<(Vec<usize>, Vec<Vec<Mapping>>)> {
-    let pattern = Regex::new(r"(?<dest>\d+)\s(?<src>\d+)\s(?<len>\d+)").unwrap();
-    let mut iterator = input.iter();
+pub fn parse(input: &Vec<String>) -> Result<(Vec<usize>, Vec<Vec<Mapping>>)> {
+    let (seeds, maps) = input.split_at(1);
+    let mapping = Regex::new(r"\d+\s\d+\s\d+")?;
 
-    let seeds: Vec<usize> = iterator.next()
-        .context("Tried parsing empty input")
-        .and_then(|seeds|
-            seeds.strip_prefix("seeds: ")
-                .context("Failed to remove seeds prefix from {seeds}"))
-        .and_then(|seeds|
-            seeds.split_ascii_whitespace()
-                .map(|id| id.parse::<usize>().map_err(|err| anyhow!(err)))
-                .collect::<Result<Vec<usize>>>())?;
+    let seeds: Vec<usize> = seeds[0]
+        .strip_prefix("seeds: ").context("Failed to remove seeds prefix from {seeds}")?
+        .split_ascii_whitespace()
+        .map(|id| id.parse::<usize>().map_err(|err| anyhow!(err)))
+        .collect::<Result<Vec<usize>>>()?;
 
-    let maps = iterator
-        .group_by(|line| pattern.is_match(line))
+    let maps = maps.iter()
+        .group_by(|line| mapping.is_match(line))
         .into_iter()
         .filter(|(key, _)| *key)
         .map(|(_, group)|
-            group
-                .into_iter()
-                .map(|line| line.parse::<Mapping>()).collect())
+            group.into_iter()
+                .map(|line| line.parse::<Mapping>())
+                .collect())
         .collect::<Result<Vec<Vec<Mapping>>>>()?;
 
     Ok((seeds, maps))
@@ -81,42 +75,41 @@ mod tests {
     fn test_parse() {
         let input = "seeds: 79 14 55 13
 
-    seed-to-soil map:
-    50 98 2
-    52 50 48
+seed-to-soil map:
+50 98 2
+52 50 48
 
-    soil-to-fertilizer map:
-    0 15 37
-    37 52 2
-    39 0 15
+soil-to-fertilizer map:
+0 15 37
+37 52 2
+39 0 15
 
-    fertilizer-to-water map:
-    49 53 8
-    0 11 42
-    42 0 7
-    57 7 4
+fertilizer-to-water map:
+49 53 8
+0 11 42
+42 0 7
+57 7 4
 
-    water-to-light map:
-    88 18 7
-    18 25 70
+water-to-light map:
+88 18 7
+18 25 70
 
-    light-to-temperature map:
-    45 77 23
-    81 45 19
-    68 64 13
+light-to-temperature map:
+45 77 23
+81 45 19
+68 64 13
 
-    temperature-to-humidity map:
-    0 69 1
-    1 0 69
+temperature-to-humidity map:
+0 69 1
+1 0 69
 
-    humidity-to-location map:
-    60 56 37
-    56 93 4
-".lines()
+humidity-to-location map:
+60 56 37
+56 93 4".lines()
             .map(String::from)
             .collect::<Vec<String>>();
 
-        let (seeds, mappings) = parse(input).unwrap();
+        let (seeds, mappings) = parse(&input).unwrap();
 
         assert_eq!(seeds, vec![79, 14, 55, 13]);
         assert_eq!(mappings.len(), 7);
