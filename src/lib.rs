@@ -6,6 +6,7 @@ pub mod day2;
 pub mod day3;
 pub mod day4;
 pub mod day5;
+pub mod day6;
 
 pub fn get_input(filename: &str) -> Lines<BufReader<File>> {
     let file = File::open(format!("input/{filename}"))
