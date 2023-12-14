@@ -1,5 +1,6 @@
-use std::fmt::Error;
 use std::str::FromStr;
+
+use anyhow::{anyhow, Result};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Cubes(pub u32, pub u32, pub u32);
@@ -36,9 +37,9 @@ fn parse_rounds(input: &str) -> Vec<Cubes> {
 }
 
 impl FromStr for Game {
-    type Err = Error;
+    type Err = anyhow::Error;
 
-    fn from_str(input: &str) -> Result<Self, Self::Err> {
+    fn from_str(input: &str) -> Result<Self> {
         input.split_once(": ")
             .and_then(|(game, rounds)|
                 game.split_once(' ')
@@ -47,7 +48,7 @@ impl FromStr for Game {
                         id,
                         rounds: parse_rounds(rounds),
                     }))
-            .ok_or(Error)
+            .ok_or(anyhow!("Failed to parse Game from {input}"))
     }
 }
 
